@@ -14,23 +14,31 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.tooling.preview.Preview
 import com.baguio.projectverde.ui.theme.ProjectVerdeTheme
 
-// Hard-coded data list for News (from previous step)
+// DATA MODELS AND HARD-CODED LISTS
+
 val sampleNews = listOf(
     News("New Recycling Station at Burnham Park", "An electronic waste recycling station has been installed.", "2 days ago"),
     News("Citywide Cleanup Drive Scheduled", "Join the cleanup this Saturday at 8:00 AM.", "1 week ago"),
     News("Updated Recycling Guidelines", "New guidelines for plastic sorting are in effect.", "2 weeks ago")
 )
 
+val sampleTips = listOf(
+    TipItem("Say NO to Plastic Bags", "Always carry a reusable shopping bag, especially when visiting the public market or grocery stores."),
+    TipItem("Recycle Soft Plastics", "Clean and dry all plastic packaging (like chip bags and candy wrappers) before placing them in your recycling bin."),
+    TipItem("Compost Kitchen Scraps", "Start a small composting pile for fruit and vegetable waste to create natural fertilizer for your plants."),
+    TipItem("Check E-Waste Schedules", "Do not mix old batteries, chargers, or broken electronics with regular trash. Check the InfoHub for special e-waste collection drives.")
+)
+
+// MAIN SCREEN COMPOSABLE
+
 @Composable
 fun InfoHubScreen() {
-    // 1. Tab State: Tracks the currently selected tab index
-    var selectedTabIndex by rememberSaveable { mutableIntStateOf(0) }
+    var selectedTabIndex by rememberSaveable { mutableStateOf(0) }
     val tabTitles = listOf("News", "Tips", "Eco AI")
 
     Column(modifier = Modifier.fillMaxSize()) {
         InfoHubHeader()
 
-        // 2. Tab Bar
         TabRow(
             selectedTabIndex = selectedTabIndex,
             modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)
@@ -45,14 +53,15 @@ fun InfoHubScreen() {
         }
         Spacer(modifier = Modifier.height(16.dp))
 
-        // 3. Content Area: Swap content based on the selected tab
         when (selectedTabIndex) {
             0 -> NewsTabContent()
-            1 -> Text("Tips content goes here.", modifier = Modifier.padding(16.dp))
-            2 -> EcoAITabContent() // This is the new AI screen
+            1 -> TipsTabContent()
+            2 -> EcoAITabContent()
         }
     }
 }
+
+// TAB CONTENT COMPOSABLES
 
 @Composable
 fun InfoHubHeader() {
@@ -82,7 +91,32 @@ fun NewsTabContent() {
     }
 }
 
-// Reuse the existing NewsCard Composable
+@Composable
+fun TipsTabContent() {
+    LazyColumn(
+        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
+        modifier = Modifier.fillMaxSize()
+    ) {
+        items(sampleTips) { tipItem ->
+            TipCard(tipItem)
+        }
+    }
+}
+
+@Composable
+fun TipCard(tip: TipItem) {
+    Card(
+        modifier = Modifier.fillMaxWidth().padding(vertical = 6.dp),
+        elevation = CardDefaults.cardElevation(2.dp)
+    ) {
+        Column(modifier = Modifier.padding(16.dp)) {
+            Text(tip.headline, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, color = Color(0xFF2E8B57))
+            Spacer(modifier = Modifier.height(4.dp))
+            Text(tip.detail, style = MaterialTheme.typography.bodyMedium)
+        }
+    }
+}
+
 @Composable
 fun NewsCard(news: News) {
     Card(
@@ -98,6 +132,7 @@ fun NewsCard(news: News) {
         }
     }
 }
+
 // Preview remains the same
 @Preview(showBackground = true, name = "1. Info Hub Screen")
 @Composable

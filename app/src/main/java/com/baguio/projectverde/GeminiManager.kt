@@ -1,28 +1,31 @@
 package com.baguio.projectverde
 
-import android.content.Context
+import com.baguio.projectverde.BuildConfig
 import com.google.ai.client.generativeai.GenerativeModel
 import com.google.ai.client.generativeai.type.generationConfig
 
-class GeminiManager(context: Context) {
-    private val apiKey = context.getString(R.string.gemini_api_key)
+class GeminiManager {
 
-    private val systemInstruction = """
-        You are Eco Assistant, a helpful and knowledgeable expert on waste management, recycling, and sustainability specifically for Baguio City, Philippines.
-        Your tone should be encouraging, formal, and informative.
-        Keep answers concise. Always prioritize information related to responsible consumption, segregation, local schedules, or eco-friendly tips.
+    private val systemPrompt = """
+        You are Eco Assistant — an expert on recycling, waste management, and sustainability in Baguio City, Philippines.
+        Keep your answers helpful, concise, and environmentally focused.
+        Include local practices, schedules, or eco-friendly advice whenever possible.
     """.trimIndent()
 
-    private val generationConfig = generationConfig {
-        systemInstruction = this@GeminiManager.systemInstruction
-    }
+    private val model = GenerativeModel(
+        modelName = "gemini-2.5-flash",
+        apiKey = BuildConfig.GEMINI_API_KEY,
+        generationConfig = generationConfig {
+            temperature = 0.7f
+        }
+    )
 
-    // FIX: Using 'lazy' to defer initialization until the property is first accessed.
-    val generativeModel by lazy {
-        GenerativeModel(
-            modelName = "gemini-2.5-flash",
-            apiKey = apiKey,
-            config = generationConfig
-        )
+    suspend fun ask(question: String): String {
+        return try {
+            val result = model.generateContent("$systemPrompt\n\nUser: $question")
+            result.text ?: "Sorry, I couldn't generate a response."
+        } catch (e: Exception) {
+            "⚠️ Connection error: ${e.localizedMessage}"
+        }
     }
 }
