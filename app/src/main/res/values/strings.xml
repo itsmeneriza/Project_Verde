@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Project Verde</string>
+    <string name="verde_baguio">VERDE BAGUIO</string>
+    <string name="verde_baguio_logo">Verde Baguio Logo</string>
 </resources>

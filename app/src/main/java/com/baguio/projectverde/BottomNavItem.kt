@@ -11,6 +11,7 @@ data class BottomNavItem(
     val icon: @Composable () -> ImageVector
 )
 
+@Composable
 fun getBottomNavItems() = listOf(
     BottomNavItem("Home", "Home", { Icons.Default.Home }),
     BottomNavItem("Challenges", "Challenges", { Icons.Default.ThumbUp }),
@@ -18,3 +19,4 @@ fun getBottomNavItems() = listOf(
     BottomNavItem("Rewards", "Rewards", { Icons.Default.Star }),
     BottomNavItem("InfoHub", "InfoHub", { Icons.Default.Info })
 )
+
