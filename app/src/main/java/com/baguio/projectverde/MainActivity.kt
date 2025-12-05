@@ -77,6 +77,15 @@ fun NavigationHost(navController: NavHostController, modifier: Modifier = Modifi
         composable("Home") {
             DashboardScreen(navController)
         }
+
+        composable(route = "Challenges") {
+            ChallengesScreen()
+        }
+
+        composable("Scan") {
+            ScanScreen()
+        }
+
         composable("InfoHub") {
             InfoHubScreen()
         }
@@ -84,10 +93,7 @@ fun NavigationHost(navController: NavHostController, modifier: Modifier = Modifi
             RewardsScreen()
         }
 
-        // Placeholders for other tabs
-        composable("Challenges") { Text("Challenges Screen", modifier = Modifier.fillMaxSize().wrapContentSize(Alignment.Center)) }
-        composable("Scan") { Text("QR Scanner Screen", modifier = Modifier.fillMaxSize().wrapContentSize(Alignment.Center)) }
-    }
+   }
 }
 
 @Composable

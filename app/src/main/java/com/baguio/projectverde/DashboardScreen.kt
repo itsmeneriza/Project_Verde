@@ -1,6 +1,7 @@
 package com.baguio.projectverde
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable // Added for click actions
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -25,7 +26,7 @@ fun DashboardScreen(navController: NavController) {
             .background(Color(0xFFF9FAFB))
             .padding(16.dp)
     ) {
-        // Header
+        // --- Header ---
         Row(verticalAlignment = Alignment.CenterVertically) {
             Surface(shape = CircleShape, color = Color(0xFF00C853), modifier = Modifier.size(24.dp)) {
                 Box(contentAlignment = Alignment.Center) { Text("V", color = Color.White, fontSize = 12.sp) }
@@ -36,7 +37,7 @@ fun DashboardScreen(navController: NavController) {
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        // Profile Card
+        // --- Profile Card ---
         Card(
             colors = CardDefaults.cardColors(containerColor = Color.White),
             shape = RoundedCornerShape(24.dp),
@@ -64,7 +65,7 @@ fun DashboardScreen(navController: NavController) {
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Action Buttons (Scan & AI)
+        // --- Action Buttons (Scan & AI) ---
         Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
             DashboardActionButton(
                 icon = AppIcons.QrCode,
@@ -74,26 +75,89 @@ fun DashboardScreen(navController: NavController) {
                 onClick = { navController.navigate("Scan") }
             )
             DashboardActionButton(
-                icon = Icons.Default.Info, // Brain icon for AI
+                icon = Icons.Default.Info,
                 label = "Eco AI",
                 color = Color(0xFFA855F7), // Purple
                 modifier = Modifier.weight(1f),
-                onClick = { navController.navigate("InfoHub") } // <--- Navigates to your AI Hub
+                onClick = { navController.navigate("InfoHub") }
             )
         }
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        // Challenges Section Header
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Icon(Icons.Default.ThumbUp, contentDescription = null, tint = Color(0xFF00C853))
-            Spacer(modifier = Modifier.width(8.dp))
-            Text("Challenges", fontWeight = FontWeight.Bold, fontSize = 18.sp)
-            Spacer(modifier = Modifier.weight(1f))
-            Text("View All", color = Color.Gray, fontSize = 12.sp)
-        }
+        // --- Challenges Section ---
+        Card(
+            colors = CardDefaults.cardColors(containerColor = Color.White),
+            shape = RoundedCornerShape(24.dp),
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Column(modifier = Modifier.padding(16.dp)) {
+                // Section Header
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Icon(Icons.Default.ThumbUp, contentDescription = null, tint = Color(0xFF00C853), modifier = Modifier.size(20.dp))
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text("Challenges", fontWeight = FontWeight.Bold, fontSize = 18.sp, color = Color.Black)
+                    Spacer(modifier = Modifier.weight(1f))
 
-        // Add Challenge Cards here...
+                    // --- UPDATE: Made View All Clickable ---
+                    Text(
+                        text = "View All",
+                        fontSize = 12.sp,
+                        color = Color.Gray,
+                        modifier = Modifier.clickable { navController.navigate("Challenges") }
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                // Challenge 1
+                DashboardChallengeItem(
+                    title = "Burnham Park Community Cleanup",
+                    date = "Sat, Nov 15 • 8:00 AM",
+                    daysLeft = "5 days left",
+                    tag = "Community Event",
+                    points = "+300",
+                    icon = Icons.Default.Face,
+                    themeColor = Color(0xFF3B82F6), // Blue
+                    bgColor = Color(0xFFEFF6FF)     // Light Blue BG
+                )
+
+                Spacer(modifier = Modifier.height(12.dp))
+
+                // Challenge 2
+                DashboardChallengeItem(
+                    title = "E-Waste Collection Drive",
+                    date = "Sat, Nov 18 • 9:00 AM",
+                    daysLeft = "8 days left",
+                    tag = "Special Collection",
+                    points = "+400",
+                    icon = Icons.Default.Star,
+                    themeColor = Color(0xFFA855F7), // Purple
+                    bgColor = Color(0xFFFAF5FF)     // Light Purple BG
+                )
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                // Footer - Also clickable now
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable { navController.navigate("Challenges") },
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = "See all challenges and events →",
+                        color = Color(0xFF00C853),
+                        fontSize = 12.sp,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.padding(8.dp)
+                    )
+                }
+            }
+        }
     }
 }
 
@@ -117,6 +181,95 @@ fun DashboardActionButton(icon: ImageVector, label: String, color: Color, modifi
             }
             Spacer(modifier = Modifier.height(8.dp))
             Text(label, fontWeight = FontWeight.Bold, color = Color.Black)
+        }
+    }
+}
+
+// --- Helper Component for the Challenge List Items ---
+@Composable
+fun DashboardChallengeItem(
+    title: String,
+    date: String,
+    daysLeft: String,
+    tag: String,
+    points: String,
+    icon: ImageVector,
+    themeColor: Color,
+    bgColor: Color
+) {
+    Card(
+        colors = CardDefaults.cardColors(containerColor = bgColor),
+        shape = RoundedCornerShape(16.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Column(modifier = Modifier.padding(16.dp)) {
+            Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.Top) {
+                // Icon
+                Icon(
+                    imageVector = icon,
+                    contentDescription = null,
+                    tint = themeColor,
+                    modifier = Modifier.size(20.dp)
+                )
+
+                Spacer(modifier = Modifier.width(8.dp))
+
+                // Title & Date
+                Column(modifier = Modifier.weight(1f)) {
+                    Text(title, fontSize = 14.sp, fontWeight = FontWeight.Bold, color = Color(0xFF1F2937), lineHeight = 18.sp)
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Icon(Icons.Default.DateRange, contentDescription = null, tint = Color.Gray, modifier = Modifier.size(12.dp))
+                        Spacer(modifier = Modifier.width(4.dp))
+                        Text(date, fontSize = 11.sp, color = Color.Gray)
+                    }
+                }
+
+                // Points Badge
+                Surface(
+                    color = Color(0xFFFEF9C3), // Light Yellow
+                    shape = RoundedCornerShape(6.dp)
+                ) {
+                    Text(
+                        text = points,
+                        color = Color(0xFFA16207), // Dark Yellow/Brown
+                        fontSize = 10.sp,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp)
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            // Bottom Row (Timer & Tag)
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Icon(Icons.Default.Info, contentDescription = null, tint = Color.Gray, modifier = Modifier.size(12.dp))
+                    Spacer(modifier = Modifier.width(4.dp))
+                    Text(daysLeft, fontSize = 11.sp, color = Color.Gray)
+                }
+
+                // Tag
+                Surface(
+                    color = Color.White,
+                    border = androidx.compose.foundation.BorderStroke(1.dp, Color.LightGray),
+                    shape = RoundedCornerShape(8.dp)
+                ) {
+                    Text(
+                        text = tag,
+                        color = Color.Black,
+                        fontSize = 10.sp,
+                        fontWeight = FontWeight.Medium,
+                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
+                    )
+                }
+            }
         }
     }
 }
