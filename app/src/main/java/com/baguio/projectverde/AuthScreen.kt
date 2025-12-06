@@ -1,20 +1,21 @@
 package com.baguio.projectverde
 
-import androidx.compose.foundation.Image // Add this import
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-// REMOVED: import androidx.compose.material.icons.filled.Terrain
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource // Add this import
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -22,6 +23,12 @@ import androidx.navigation.NavController
 @Composable
 fun AuthScreen(navController: NavController) {
     var isLogin by remember { mutableStateOf(true) }
+
+    // --- 1. State Variables to hold user input ---
+    var name by remember { mutableStateOf("") }
+    var phone by remember { mutableStateOf("") }
+    var email by remember { mutableStateOf("") }
+    var password by remember { mutableStateOf("") }
 
     Column(
         modifier = Modifier
@@ -43,7 +50,6 @@ fun AuthScreen(navController: NavController) {
             ) {
                 // Logo
                 Image(
-                    // Ensure this matches your actual file name in res/drawable (e.g., R.drawable.logo)
                     painter = painterResource(id = R.drawable.verde_logo),
                     contentDescription = "Verde Baguio Logo",
                     modifier = Modifier.size(80.dp)
@@ -65,23 +71,44 @@ fun AuthScreen(navController: NavController) {
 
                 Spacer(modifier = Modifier.height(24.dp))
 
-                // Form Fields
+                // --- 2. Pass state variables to Text Fields ---
                 if (!isLogin) {
-                    AuthTextField(label = "Full Name")
+                    AuthTextField(
+                        value = name,
+                        onValueChange = { name = it },
+                        label = "Full Name"
+                    )
                     Spacer(modifier = Modifier.height(12.dp))
-                    AuthTextField(label = "Phone Number")
+                    AuthTextField(
+                        value = phone,
+                        onValueChange = { phone = it },
+                        label = "Phone Number",
+                        keyboardType = KeyboardType.Phone
+                    )
                     Spacer(modifier = Modifier.height(12.dp))
                 }
-                AuthTextField(label = "Email or Phone Number")
+
+                AuthTextField(
+                    value = email,
+                    onValueChange = { email = it },
+                    label = "Email or Phone Number",
+                    keyboardType = KeyboardType.Email
+                )
                 Spacer(modifier = Modifier.height(12.dp))
-                AuthTextField(label = "Password", isPassword = true)
+
+                AuthTextField(
+                    value = password,
+                    onValueChange = { password = it },
+                    label = "Password",
+                    isPassword = true
+                )
 
                 Spacer(modifier = Modifier.height(24.dp))
 
                 // Action Button
                 Button(
                     onClick = {
-                        // On success, navigate to Home
+                        // Navigate to Home
                         navController.navigate("Home") {
                             popUpTo("Auth") { inclusive = true }
                         }
@@ -113,13 +140,22 @@ fun RowScope.AuthTabButton(text: String, isSelected: Boolean, onClick: () -> Uni
     }
 }
 
+// --- 3. Updated Helper Component to handle input ---
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AuthTextField(label: String, isPassword: Boolean = false) {
+fun AuthTextField(
+    value: String,
+    onValueChange: (String) -> Unit,
+    label: String,
+    isPassword: Boolean = false,
+    keyboardType: KeyboardType = KeyboardType.Text
+) {
     TextField(
-        value = "",
-        onValueChange = {},
+        value = value,
+        onValueChange = onValueChange,
         placeholder = { Text(label, color = Color.Gray) },
+        visualTransformation = if (isPassword) PasswordVisualTransformation() else VisualTransformation.None,
+        keyboardOptions = KeyboardOptions(keyboardType = keyboardType),
         modifier = Modifier.fillMaxWidth(),
         colors = TextFieldDefaults.colors(
             focusedContainerColor = Color(0xFFF3F4F6),

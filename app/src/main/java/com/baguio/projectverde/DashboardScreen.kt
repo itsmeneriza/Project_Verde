@@ -1,7 +1,7 @@
 package com.baguio.projectverde
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable // Added for click actions
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -44,7 +44,10 @@ fun DashboardScreen(navController: NavController) {
             modifier = Modifier.fillMaxWidth()
         ) {
             Row(
-                modifier = Modifier.padding(16.dp),
+                // CHANGED: Added fillMaxWidth() so SpaceBetween works correctly
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
@@ -102,7 +105,7 @@ fun DashboardScreen(navController: NavController) {
                     Text("Challenges", fontWeight = FontWeight.Bold, fontSize = 18.sp, color = Color.Black)
                     Spacer(modifier = Modifier.weight(1f))
 
-                    // --- UPDATE: Made View All Clickable ---
+                    // View All Link
                     Text(
                         text = "View All",
                         fontSize = 12.sp,
@@ -119,7 +122,7 @@ fun DashboardScreen(navController: NavController) {
                     date = "Sat, Nov 15 • 8:00 AM",
                     daysLeft = "5 days left",
                     tag = "Community Event",
-                    points = "+300",
+                    points = "+30",
                     icon = Icons.Default.Face,
                     themeColor = Color(0xFF3B82F6), // Blue
                     bgColor = Color(0xFFEFF6FF)     // Light Blue BG
@@ -133,7 +136,7 @@ fun DashboardScreen(navController: NavController) {
                     date = "Sat, Nov 18 • 9:00 AM",
                     daysLeft = "8 days left",
                     tag = "Special Collection",
-                    points = "+400",
+                    points = "+40",
                     icon = Icons.Default.Star,
                     themeColor = Color(0xFFA855F7), // Purple
                     bgColor = Color(0xFFFAF5FF)     // Light Purple BG
@@ -141,7 +144,7 @@ fun DashboardScreen(navController: NavController) {
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                // Footer - Also clickable now
+                // Footer
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
